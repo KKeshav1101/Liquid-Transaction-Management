@@ -26,7 +26,8 @@ import {
   RefreshCw,
   Calculator,
   LogOut,
-  AlertTriangle
+  AlertTriangle,
+  CloudOff
 } from 'lucide-react';
 
 export { 
@@ -57,5 +58,6 @@ export {
   RefreshCw,
   Calculator,
   LogOut,
-  AlertTriangle
+  AlertTriangle,
+  CloudOff
 };
