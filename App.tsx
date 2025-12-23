@@ -11,9 +11,8 @@ import { AddTransaction } from './components/Transaction/AddTransaction';
 import { SetupModal } from './components/Onboarding/SetupModal';
 import { Settings as SettingsComponent } from './components/Settings/Settings';
 import { ActivityView } from './components/Activity/ActivityView';
-import { Home, PieChart, TrendingUp, Plus, Settings, Calendar, Wallet, List, CloudOff } from './components/ui/Icons';
+import { Home, PieChart, TrendingUp, Plus, Settings, Calendar, Wallet, List } from './components/ui/Icons';
 import { LiquidLogo } from './components/ui/LiquidLogo';
-import { useOnlineStatus } from './hooks/useOnlineStatus';
 
 // Default profile state for initial load
 const DEFAULT_PROFILE: UserProfile = {
@@ -45,8 +44,6 @@ function App() {
   const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
-  
-  const isOnline = useOnlineStatus();
 
   // --- Initialization ---
   useEffect(() => {
@@ -160,16 +157,9 @@ function App() {
                     <h1 className="text-xl font-bold tracking-tight leading-none">
                       Liquid <span className="font-light text-slate-400">Assistant</span>
                     </h1>
-                    <div className="flex items-center gap-2 mt-1">
-                        <p className="text-[10px] text-cyan-400 font-medium tracking-wide">
-                        HELLO, {userProfile.name?.toUpperCase() || 'USER'}
-                        </p>
-                        {!isOnline && (
-                            <span className="flex items-center gap-1 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded text-[9px] text-red-400 font-bold">
-                                <CloudOff size={10} /> OFFLINE
-                            </span>
-                        )}
-                    </div>
+                    <p className="text-[10px] text-cyan-400 font-medium tracking-wide mt-1">
+                      HELLO, {userProfile.name?.toUpperCase() || 'USER'}
+                    </p>
                   </div>
                 </div>
             ) : (
@@ -182,14 +172,7 @@ function App() {
                         {activeTab === 'invest' && 'Investments'}
                         {activeTab === 'settings' && 'Settings'}
                         </h1>
-                        <div className="flex items-center gap-2 mt-1">
-                            <p className="text-[10px] text-slate-400 font-medium tracking-wide">Manage your wealth</p>
-                            {!isOnline && (
-                                <span className="flex items-center gap-1 bg-red-500/10 border border-red-500/20 px-1.5 py-0.5 rounded text-[9px] text-red-400 font-bold">
-                                    <CloudOff size={10} /> OFFLINE
-                                </span>
-                            )}
-                        </div>
+                        <p className="text-[10px] text-slate-400 font-medium tracking-wide mt-1">Manage your wealth</p>
                     </div>
                 </div>
             )}
@@ -241,7 +224,6 @@ function App() {
                <InvestmentVisualizer 
                  profile={userProfile}
                  transactions={transactions}
-                 isOnline={isOnline}
                />
             </div>
           )}

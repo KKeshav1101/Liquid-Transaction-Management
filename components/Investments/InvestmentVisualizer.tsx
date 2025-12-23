@@ -1,14 +1,13 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Label } from 'recharts';
 import { GLASS_PANEL } from '../../constants';
-import { BrainCircuit, HelpCircle, X, MessageSquare, Sparkles, TrendingUp, CloudOff } from '../ui/Icons';
+import { BrainCircuit, HelpCircle, X, MessageSquare, Sparkles, TrendingUp } from '../ui/Icons';
 import { analyzeInvestmentAction } from '../../services/geminiService';
 import { UserProfile, Transaction } from '../../types';
 
 interface InvestmentVisualizerProps {
     profile?: UserProfile;
     transactions?: Transaction[];
-    isOnline?: boolean;
 }
 
 // --- Text Formatter Component ---
@@ -68,7 +67,7 @@ const FormattedText: React.FC<{ text: string }> = ({ text }) => {
     );
 };
 
-export const InvestmentVisualizer: React.FC<InvestmentVisualizerProps> = ({ profile, transactions, isOnline = true }) => {
+export const InvestmentVisualizer: React.FC<InvestmentVisualizerProps> = ({ profile, transactions }) => {
   // Chart State
   const [principal, setPrincipal] = useState(100000);
   const [monthlyContribution, setMonthlyContribution] = useState(15000);
@@ -92,7 +91,6 @@ export const InvestmentVisualizer: React.FC<InvestmentVisualizerProps> = ({ prof
 
   const handleSendMessage = async () => {
       if (!input.trim() || !profile || !transactions) return;
-      if (!isOnline) return;
 
       const userMsg = input;
       setInput('');
@@ -185,9 +183,9 @@ export const InvestmentVisualizer: React.FC<InvestmentVisualizerProps> = ({ prof
                 <HelpCircle size={20} />
             </button>
         </div>
-        <div className={`flex items-center gap-1.5 text-[10px] font-semibold px-3 py-1 rounded-full border ${isOnline ? 'text-emerald-400 bg-emerald-950/30 border-emerald-800/50' : 'text-slate-400 bg-slate-800 border-slate-700'}`}>
-            <Sparkles size={12} className={isOnline ? "" : "opacity-50"} />
-            {isOnline ? 'AI Agent Active' : 'AI Offline'}
+        <div className="flex items-center gap-1.5 text-[10px] font-semibold text-emerald-400 bg-emerald-950/30 px-3 py-1 rounded-full border border-emerald-800/50">
+            <Sparkles size={12} />
+            AI Agent Active
         </div>
       </div>
 
@@ -272,29 +270,20 @@ export const InvestmentVisualizer: React.FC<InvestmentVisualizerProps> = ({ prof
 
           <div className="p-4 bg-slate-900/50 border-t border-white/5">
               <div className="relative">
-                {isOnline ? (
-                    <>
-                        <input 
-                            value={input}
-                            onChange={(e) => setInput(e.target.value)}
-                            onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
-                            placeholder="Describe a plan (e.g. 5k SIP in Small Cap)..."
-                            className="w-full bg-slate-800/80 border border-slate-600 rounded-xl py-3 pl-4 pr-12 text-sm text-white focus:border-cyan-500 focus:outline-none placeholder:text-slate-500 shadow-inner"
-                        />
-                        <button 
-                            onClick={handleSendMessage}
-                            disabled={isTyping}
-                            className="absolute right-2 top-2 p-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors disabled:opacity-50 shadow-md"
-                        >
-                            <TrendingUp size={18} />
-                        </button>
-                    </>
-                ) : (
-                    <div className="w-full bg-slate-800/50 border border-slate-700 rounded-xl py-3 px-4 text-sm text-slate-500 flex items-center justify-center gap-2 cursor-not-allowed">
-                        <CloudOff size={16} />
-                        <span>Offline: AI Assistant Unavailable</span>
-                    </div>
-                )}
+                <input 
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleSendMessage()}
+                    placeholder="Describe a plan (e.g. 5k SIP in Small Cap)..."
+                    className="w-full bg-slate-800/80 border border-slate-600 rounded-xl py-3 pl-4 pr-12 text-sm text-white focus:border-cyan-500 focus:outline-none placeholder:text-slate-500 shadow-inner"
+                />
+                <button 
+                    onClick={handleSendMessage}
+                    disabled={isTyping}
+                    className="absolute right-2 top-2 p-1.5 bg-cyan-600 hover:bg-cyan-500 text-white rounded-lg transition-colors disabled:opacity-50 shadow-md"
+                >
+                    <TrendingUp size={18} />
+                </button>
               </div>
           </div>
       </div>
