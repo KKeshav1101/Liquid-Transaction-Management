@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
+import { Capacitor } from '@capacitor/core';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { Transaction, TransactionType, UserProfile } from './types';
-import { GLASS_PANEL_HOVER } from './constants';
 import { getDBTransactions, getDBProfile, saveDBProfile, addDBTransaction, resetDB } from './db';
 import { BalanceCard } from './components/Dashboard/BalanceCard';
 import { DashboardCharts } from './components/Dashboard/DashboardCharts';
@@ -11,7 +12,7 @@ import { AddTransaction } from './components/Transaction/AddTransaction';
 import { SetupModal } from './components/Onboarding/SetupModal';
 import { Settings as SettingsComponent } from './components/Settings/Settings';
 import { ActivityView } from './components/Activity/ActivityView';
-import { Home, PieChart, TrendingUp, Plus, Settings, Calendar, Wallet, List, CloudOff } from './components/ui/Icons';
+import { Home, PieChart, TrendingUp, Plus, Settings, List, CloudOff } from './components/ui/Icons';
 import { LiquidLogo } from './components/ui/LiquidLogo';
 import { useOnlineStatus } from './hooks/useOnlineStatus';
 
@@ -52,6 +53,18 @@ function App() {
   useEffect(() => {
     const initData = async () => {
         try {
+            // Configure Status Bar for Immersive Experience (Android/iOS)
+            if (Capacitor.isNativePlatform()) {
+                try {
+                    await StatusBar.setOverlaysWebView({ overlay: true });
+                    await StatusBar.setStyle({ style: Style.Dark });
+                    // Explicitly set transparent background for Android
+                    await StatusBar.setBackgroundColor({ color: '#00000000' });
+                } catch (err) {
+                    console.warn('Status bar config failed', err);
+                }
+            }
+
             // Artificial delay for better UX (prevents flicker)
             await new Promise(resolve => setTimeout(resolve, 800));
 
@@ -151,7 +164,8 @@ function App() {
       <div className={`w-full max-w-md h-full min-h-screen relative flex flex-col bg-[#0f172a] ${!userProfile.isSetup ? 'blur-sm' : ''}`}>
         
         {/* Header - Settings always available on top right */}
-        <header className="px-6 pt-12 pb-4 flex justify-between items-center bg-[#0f172a]/90 backdrop-blur-md sticky top-0 z-40 border-b border-white/5">
+        {/* Updated padding-top to handle notch (safe-area-inset-top) */}
+        <header className="px-6 pt-[max(3rem,env(safe-area-inset-top))] pb-4 flex justify-between items-center bg-[#0f172a]/90 backdrop-blur-md sticky top-0 z-40 border-b border-white/5">
           <div>
             {activeTab === 'dashboard' ? (
                 <div className="flex items-center gap-3">
